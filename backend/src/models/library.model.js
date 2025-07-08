@@ -43,31 +43,31 @@ exports.selectBookById = async (id) => {
 
 // POST a new book
 exports.insertBook = async (data) => {
-  const {
-    google_id,
-    title,
-    authors,
-    published_date,
-    info_link,
-    description,
-    page_count,
-    thumbnail,
-    categories = [],
-    tags = [],
-    status = null,
-    rating = null,
-    comments = null,
-    start_date = null,
-    finish_date = null,
-  } = data;
+    const {
+        google_id,
+        title,
+        authors,
+        published_date = null,
+        info_link = null,
+        description = null,
+        page_count = null,
+        thumbnail = null,
+        categories = [],  
+        tags = null,       
+        rating = null,
+        comments = null,
+        status = null
+      } = data;
 
   const sql = ` 
     INSERT INTO books
-      (google_id,title,authors,published_date,info_link,description,
-       page_count,thumbnail,categories,tags,status,rating,comments,
-       start_date,finish_date)
+      (google_id, title, authors, published_date,
+       info_link, description, page_count, thumbnail,
+       categories, tags, rating, comments, status)
     VALUES
-      ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+      ($1, $2, $3, $4,
+       $5, $6, $7, $8,
+       $9, $10, $11, $12, $13)
     RETURNING *;`;
 
   const values = [
@@ -81,11 +81,9 @@ exports.insertBook = async (data) => {
     thumbnail,
     categories,
     tags,
-    status,
     rating,
     comments,
-    start_date,
-    finish_date,
+    status
   ];
 
   try {
@@ -117,6 +115,6 @@ exports.updateBook = async (id, fields) => {
 };
 // DELETE a book
 exports.removeBook = async (id) => {
-    const result = await pool.query('DELETE FROM books WHERE id = $1;', [id]);
-    if (!result.rowCount) throw { status: 404, msg: 'Book not found' };
-  };
+  const result = await pool.query('DELETE FROM books WHERE id = $1;', [id]);
+  if (!result.rowCount) throw { status: 404, msg: 'Book not found' };
+};

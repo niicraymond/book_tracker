@@ -1,3 +1,4 @@
+const axios = require('axios')
 const {
   selectBooks,
   selectBookById,
@@ -28,12 +29,39 @@ exports.getBookById = async (req, res, next) => {
   }
 };
 
+
 // POST /api/library
 exports.createBook = async (req, res, next) => {
   try {
-    const newBook = await insertBook(req.body);
+    const { google_id, tags = [], status = null } = req.body;
+
+    const { data } = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes/${google_id}`
+    );
+    const v = data.volumeInfo;
+
+    const bookData = {
+      google_id,
+      title: v.title,
+      authors: v.authors || [],
+      published_date: v.publishedDate || null,
+      info_link: v.infoLink || null,
+      description: v.description || null,
+      page_count: v.pageCount || null,
+      thumbnail: v.imageLinks?.thumbnail || null,
+      categories: v.categories || [],
+      tags,
+      status,
+      rating: null,
+      comments: null,
+    };
+
+    const newBook = await insertBook(bookData);
     res.status(201).json({ book: newBook });
   } catch (err) {
+    if (err.response?.status === 404) {
+      return next({ status: 404, msg: 'Book not found in Google Books' });
+    }
     next(err);
   }
 };
