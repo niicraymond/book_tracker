@@ -1,19 +1,58 @@
-exports.getAllBooks = (req, res) => {
-    res.json([])
-}
+const {
+  selectBooks,
+  selectBookById,
+  insertBook,
+  updateBook,
+  removeBook,
+} = require("../models/library.model");
 
-exports.getBookById = (req, res) => {
-    res.status(404).json({ msg: 'Not implemented yet' })
-}
 
-exports.createBook = (req,res) => {
-    res.status(201).json({ msg: 'Not implemented yet' })
-}
+// GET /api/library?status=
+exports.getAllBooks = (req, res, next) => {
+  const {status} = req.query
+  return selectBooks(status)
+  .then(books => {
+    res.status(200).json({books})
+  })
+  .catch(next)
+};
 
-exports.updateBook = (req,res) => {
-    res.status(200).json({ msg: 'Not implemented yet' })
-}
+// GET /api/library/:id
+exports.getBookById = (req, res, next) => {
+  const {id} = req.params
+  return selectBookById(id)
+  .then(book => {
+    res.status(200).json({book})
+  })
+  .catch(next)
+};
 
-exports.deleteBook = (req, res) => {
-    res.status(204).end()
-}
+// POST /api/library
+exports.createBook = (req, res, next) => {
+  return insertBook(req.body)
+  .then(newBook => {
+    res.status(201).json({book: newBook})
+  })
+  .catch(next)
+};
+
+// PATCH /api/library/:id
+exports.patchBook = (req, res, next) => {
+ const {id} = req.params
+ return updateBook(id, req.body)
+ .then(updatedBook => {
+    res.status(200).json({book: updatedBook})
+ })
+ .catch(next)
+};
+
+
+// DELETE /api/library/:id
+exports.deleteBook = (req, res, next) => {
+  const {id} = req.params
+  return removeBook(id)
+  .then(() => {
+    res.sendStatus(204)
+  })
+  .catch(next)
+};

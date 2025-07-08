@@ -3,7 +3,7 @@ const {
   getAllBooks,
   getBookById,
   createBook,
-  updateBook,
+  patchBook,
   deleteBook,
 } = require("../controllers/library.controller");
 
@@ -17,7 +17,7 @@ libraryRouter
 libraryRouter
 .route('/:id')
 .get(getBookById)
-.patch(updateBook)
+.patch(patchBook)
 .delete(deleteBook)
 
 module.exports = libraryRouter
