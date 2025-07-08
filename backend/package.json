@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "db:setup": "dropdb --if-exists reading_tracker && createdb reading_tracker && psql -d reading_tracker -f db/schema.sql",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "jest"

@@ -1,11 +1,11 @@
 const express = require('express')
-const app = express()
+const libraryRouter = require('./routes/library.router')
 
+const app = express()
 app.use(express.json())
 
-app.get('/', (req,res) => {
-    res.json([])
-})
+
+app.use('/api/library', libraryRouter)
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
