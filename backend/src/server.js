@@ -1,7 +1,9 @@
 const express = require('express')
+const cors = require('cors');  
 const libraryRouter = require('./routes/library.router')
 
 const app = express()
+app.use(cors()); 
 app.use(express.json())
 
 
